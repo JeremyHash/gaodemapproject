@@ -10,13 +10,9 @@
         >
             <v-app-bar-nav-icon @click="switchBar" class="white--text"></v-app-bar-nav-icon>
 
-            <v-toolbar-title>{{city}}</v-toolbar-title>
+            <v-toolbar-title>{{AppTitle}}</v-toolbar-title>
 
             <v-spacer></v-spacer>
-
-            <v-btn icon @click="darkSwitch" class="white--text">
-                <v-icon>mdi-theme-light-dark</v-icon>
-            </v-btn>
         </v-app-bar>
 
         <v-navigation-drawer v-model="drawer" :clipped="this.jeremy2" app>
@@ -59,6 +55,7 @@
 
         data: () => {
             return {
+                AppTitle: "LuatMap",
                 drawer: null,
                 jeremy2: true,
                 items: [
@@ -79,9 +76,6 @@
             switchBar: function () {
                 this.drawer = !this.drawer;
             },
-            darkSwitch: function () {
-                this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-            },
             handleImgClick: function () {
             },
             handleSearchClick: function () {
@@ -99,9 +93,6 @@
             }
         },
         computed: {
-            city: function () {
-                return "china"
-            },
             isSearch: function () {
                 return this.$store.state.searchState;
             }
