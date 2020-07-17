@@ -4,7 +4,6 @@
                 color="purple lighten-1"
                 app
                 :clipped-left="true"
-                :collapse-on-scroll="true"
                 tile
                 class="white--text"
         >
@@ -13,6 +12,9 @@
             <v-toolbar-title>{{AppTitle}}</v-toolbar-title>
 
             <v-spacer></v-spacer>
+            <v-btn icon class="white--text" @click="handleAccountClick">
+                <v-icon>mdi-account</v-icon>
+            </v-btn>
         </v-app-bar>
 
         <v-navigation-drawer v-model="drawer" :clipped="this.jeremy2" app>
@@ -31,7 +33,7 @@
                     <v-list-item
                             v-for="item in items"
                             :key="item.title"
-                            @click="handleNavListItemClick(item.link)"
+                                @click="handleNavListItemClick(item.link)"
                     >
                         <v-list-item-icon>
                             <v-icon>{{ item.icon }}</v-icon>
@@ -78,17 +80,10 @@
             },
             handleImgClick: function () {
             },
-            handleSearchClick: function () {
-                if (this.isSearch) {
-                    this.$store.commit("changeSearch", false);
-                    this.$router.replace("/");
-                } else {
-                    this.$router.replace("/search");
-                    this.$store.commit("changeSearch", true);
-                }
+            handleAccountClick: function () {
+                this.$router.replace("/login");
             },
             handleNavListItemClick: function (link) {
-                this.$store.commit("changeSearch", false);
                 this.$router.replace(link);
             }
         },
