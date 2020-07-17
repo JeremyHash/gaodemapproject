@@ -37,30 +37,34 @@
         methods: {
             loadMap: function () {
                 let jeremy = this;
-                let map = AMapLoader.load({
-                    "key": "3c618ebb54475fb63eb35b900519cd6f",   // 申请好的Web端开发者Key，首次调用 load 时必填
-                    "version": "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-                    "plugins": ["AMap.GraspRoad"]  //插件列表
+                AMapLoader.load({
+                    "key": "3c618ebb54475fb63eb35b900519cd6f",
+                    "version": "2.0",
+                    "plugins": ["AMap.GraspRoad"],
+
                 }).then((AMap) => {
-                    map = new AMap.Map('container');
-                    // AMap.plugin('AMap.CitySearch', function () {
-                    //     //实例化城市查询类
-                    //     var citysearch = new AMap.CitySearch();
-                    //     //自动获取用户IP，返回当前城市
-                    //     citysearch.getLocalCity(function (status, result) {
-                    //         if (status === 'complete' && result.info === 'OK') {
-                    //             if (result && result.city && result.bounds) {
-                    //                 jeremy.city = result.city;
-                    //                 var citybounds = result.bounds;
-                    //                 //地图显示当前城市
-                    //                 map.setBounds(citybounds);
-                    //             }
-                    //         } else {
-                    //             console.log(result.info);
-                    //         }
-                    //     });
-                    // });
-                    var grasp = new AMap.GraspRoad();
+                    let map = new AMap.Map('container', {
+                        // viewMode: '3D'
+                        mapStyle: 'amap://styles/macaron',
+                    });
+                    AMap.plugin('AMap.CitySearch', function () {
+                        //实例化城市查询类
+                        var citysearch = new AMap.CitySearch();
+                        //自动获取用户IP，返回当前城市
+                        citysearch.getLocalCity(function (status, result) {
+                            if (status === 'complete' && result.info === 'OK') {
+                                if (result && result.city && result.bounds) {
+                                    jeremy.city = result.city;
+                                    var citybounds = result.bounds;
+                                    //地图显示当前城市
+                                    map.setBounds(citybounds);
+                                }
+                            } else {
+                                console.log(result.info);
+                            }
+                        });
+                    });
+                    /*var grasp = new AMap.GraspRoad();
                     grasp.driving(jeremy.originPath, function (error, result) {
                         if (!error) {
                             var path2 = [];
@@ -79,7 +83,7 @@
                             console.log("纠偏完成");
                             map.setFitView()
                         }
-                    });
+                    });*/
                     // 同时引入工具条插件，比例尺插件和鹰眼插件
                     AMap.plugin([
                         'AMap.ToolBar',
