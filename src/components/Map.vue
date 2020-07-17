@@ -1,7 +1,7 @@
 <template>
     <v-main id="container">
         <v-chip
-                class="ma-12 float-left"
+                class="mt-8 mr-4 float-right"
                 color="indigo"
                 text-color="white"
                 id="cityChip"
@@ -94,7 +94,7 @@
                         map.addControl(new AMap.ToolBar(
                             {
                                 position: {
-                                    top: '200px',
+                                    top: '230px',
                                     right: '40px'
                                 }
                             }
@@ -102,7 +102,7 @@
 
                         map.addControl(new AMap.ControlBar({
                             position: {
-                                top: '90px',
+                                top: '130px',
                                 right: '10px',
                             }
                         }),);
