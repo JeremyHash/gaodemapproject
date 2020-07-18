@@ -12,8 +12,13 @@
             <v-toolbar-title>{{AppTitle}}</v-toolbar-title>
 
             <v-spacer></v-spacer>
-            <v-btn icon class="white--text" @click="handleAccountClick">
+            <v-btn v-if="isLogin" icon class="white--text mr-2" @click="handleAccountSignOut">
                 <v-icon>mdi-account</v-icon>
+                退出
+            </v-btn>
+            <v-btn v-else icon class="white--text mr-2" @click="handleAccountClick">
+                <v-icon>mdi-account</v-icon>
+                登陆
             </v-btn>
         </v-app-bar>
 
@@ -26,14 +31,14 @@
                     @click="handleImgClick"
                     flat
             >
-                <v-img src="./assets/img/3333.jpg"></v-img>
+                <v-img src="http://www.openluat.com/img/favicon.png"></v-img>
             </v-card>
             <v-list-item-group mandatory>
                 <v-list shaped>
                     <v-list-item
                             v-for="item in items"
                             :key="item.title"
-                                @click="handleNavListItemClick(item.link)"
+                            @click="handleNavListItemClick(item.link)"
                     >
                         <v-list-item-icon>
                             <v-icon>{{ item.icon }}</v-icon>
@@ -67,6 +72,11 @@
                         link: "/"
                     },
                     {
+                        title: "Me",
+                        icon: "mdi-account-search",
+                        link: "/me"
+                    },
+                    {
                         title: "About",
                         icon: "mdi-information",
                         link: "/about"
@@ -83,16 +93,22 @@
             handleAccountClick: function () {
                 this.$router.replace("/login");
             },
+            handleAccountSignOut: function () {
+                this.$store.commit("changeUserKey", "undefined");
+                this.$store.commit("changeIsLogin", false);
+                this.$router.replace("/");
+            },
             handleNavListItemClick: function (link) {
                 this.$router.replace(link);
             }
         },
         computed: {
-            isSearch: function () {
-                return this.$store.state.searchState;
+            isLogin: function () {
+                return this.$store.state.isLogin;
             }
         },
         mounted() {
+            this.$store.commit("changeUserKey", localStorage.userKey);
         }
     };
 </script>

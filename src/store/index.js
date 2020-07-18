@@ -5,12 +5,17 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        tridKey: ""
+        userKey: "",
+        isLogin:false
     },
     mutations: {
-        changeTridKey: function (state, tridKey) {
-            state.tridKey = tridKey;
-            localStorage.tridKey = tridKey
+        changeUserKey: function (state, userKey) {
+            state.userKey = userKey;
+            localStorage.userKey = userKey
+        },
+        changeIsLogin: function (state, isLogin) {
+            state.isLogin = isLogin;
+            localStorage.isLogin = isLogin
         },
     },
     actions: {},

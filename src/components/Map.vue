@@ -36,60 +36,49 @@
         },
         methods: {
             loadMap: function () {
-                let jeremy = this;
                 AMapLoader.load({
                     "key": "3c618ebb54475fb63eb35b900519cd6f",
                     "version": "2.0",
-                    "plugins": ["AMap.GraspRoad"],
-
                 }).then((AMap) => {
-                    let map = new AMap.Map('container', {
-                        // viewMode: '3D'
-                        mapStyle: 'amap://styles/macaron',
-                    });
-                    AMap.plugin('AMap.CitySearch', function () {
-                        //实例化城市查询类
-                        var citysearch = new AMap.CitySearch();
-                        //自动获取用户IP，返回当前城市
-                        citysearch.getLocalCity(function (status, result) {
-                            if (status === 'complete' && result.info === 'OK') {
-                                if (result && result.city && result.bounds) {
-                                    jeremy.city = result.city;
-                                    var citybounds = result.bounds;
-                                    //地图显示当前城市
-                                    map.setBounds(citybounds);
-                                }
-                            } else {
-                                console.log(result.info);
-                            }
-                        });
-                    });
-                    /*var grasp = new AMap.GraspRoad();
-                    grasp.driving(jeremy.originPath, function (error, result) {
-                        if (!error) {
-                            var path2 = [];
-                            var newPath = result.data.points;
-                            for (var i = 0; i < newPath.length; i += 1) {
-                                path2.push([newPath[i].x, newPath[i].y])
-                            }
-                            var newLine = new AMap.Polyline({
-                                path: path2,
-                                strokeWeight: 8,
-                                strokeOpacity: 0.8,
-                                strokeColor: '#0091ea',
-                                showDir: true
-                            });
-                            map.add(newLine);
-                            console.log("纠偏完成");
-                            map.setFitView()
-                        }
-                    });*/
+                    let map = new AMap.Map('container');
                     // 同时引入工具条插件，比例尺插件和鹰眼插件
                     AMap.plugin([
+                        'AMap.Geolocation',
                         'AMap.ToolBar',
                         'AMap.Scale',
                         'AMap.ControlBar'
                     ], function () {
+                        var geolocation = new AMap.Geolocation({
+                            // 是否使用高精度定位，默认：true
+                            enableHighAccuracy: true,
+                            // 设置定位超时时间，默认：无穷大
+                            timeout: 10000,
+                            // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+                            buttonOffset: new AMap.Pixel(10, 20),
+                            //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                            zoomToAccuracy: true,
+                            //  定位按钮的排放位置,  RB表示右下
+                            buttonPosition: 'RB'
+                        });
+
+                        geolocation.getCurrentPosition(function (status, result) {
+                            if (status === 'complete') {
+                                onComplete(result)
+                            } else {
+                                onError(result)
+                            }
+                        });
+
+                        function onComplete(data) {
+                            // data是具体的定位信息
+                            console.log(data)
+                        }
+
+                        function onError(data) {
+                            // 定位出错
+                            console.log(data)
+                        }
+
                         // 在图面添加工具条控件，工具条控件集成了缩放、平移、定位等功能按钮在内的组合控件
                         map.addControl(new AMap.ToolBar(
                             {
