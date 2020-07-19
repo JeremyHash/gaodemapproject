@@ -1,7 +1,7 @@
 <template>
     <v-app app>
         <v-app-bar
-                color="purple lighten-1"
+                color="indigo accent-2"
                 app
                 :clipped-left="true"
                 tile
@@ -108,6 +108,7 @@
             }
         },
         mounted() {
+            this.$store.commit("changeIsLogin", localStorage.isLogin);
             this.$store.commit("changeUserKey", localStorage.userKey);
         }
     };

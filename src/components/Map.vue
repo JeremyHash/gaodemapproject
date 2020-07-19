@@ -23,8 +23,7 @@
         name: "Map",
         data() {
             return {
-                jeremy: {},
-                city: "",
+                city: "定位中",
                 originPath: [
                     {"x": 116.478928, "y": 39.997761, "sp": 19, "ag": 0, "tm": 1478031031},
                     {"x": 116.478907, "y": 39.998422, "sp": 10, "ag": 0, "tm": 2},
@@ -38,6 +37,7 @@
         },
         methods: {
             loadMap: function () {
+                let jeremy = this;
                 AMapLoader.load({
                     "key": "3c618ebb54475fb63eb35b900519cd6f",
                     "version": "2.0",
@@ -50,13 +50,12 @@
                         'AMap.Geolocation',
                         'AMap.ToolBar',
                         'AMap.Scale',
-                        'AMap.ControlBar'
                     ], function () {
                         let geolocation = new AMap.Geolocation({
                             enableHighAccuracy: true,//是否使用高精度定位，默认:true
                             timeout: 10000,          //超过10秒后停止定位，默认：5s
-                            position: 'RB',    //定位按钮的停靠位置
-                            offset: [40, 70],
+                            position: 'RT',    //定位按钮的停靠位置
+                            offset: [40, 150],
                             panToLocation: true,   //定位成功后是否自动调整地图视野到定位点
                             zoomToAccuracy: true,
                             noIpLocate: 3,
@@ -75,31 +74,24 @@
                         function onComplete(data) {
                             // data是具体的定位信息
                             console.log("locate success");
-                            console.log(data)
+                            jeremy.city = data.city;
                         }
 
                         function onError(data) {
                             // 定位出错
                             console.log("locate fail");
-                            console.log(data)
+                            console.log(data);
                         }
 
                         // 在图面添加工具条控件，工具条控件集成了缩放、平移、定位等功能按钮在内的组合控件
                         map.addControl(new AMap.ToolBar(
                             {
                                 position: {
-                                    top: '260px',
+                                    top: '80px',
                                     right: '40px'
                                 }
                             }
                         ));
-
-                        map.addControl(new AMap.ControlBar({
-                            position: {
-                                top: '150px',
-                                right: '10px',
-                            }
-                        }),);
 
                         // 在图面添加比例尺控件，展示地图在当前层级和纬度下的比例尺
                         map.addControl(new AMap.Scale({
