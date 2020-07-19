@@ -76,14 +76,13 @@
                             if (data.city) {
                                 jeremy.city = data.city;
                             } else {
-                                jeremy.city = data;
+                                alert(data.toString());
                                 // jeremy.city = "unknown";
                             }
                         }
 
                         function onError(data) {
                             // 定位出错
-                            console.log("locate fail");
                             console.log(data);
                         }
 
