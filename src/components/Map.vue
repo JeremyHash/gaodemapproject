@@ -1,10 +1,6 @@
 <template>
     <v-main>
         <div id="container">
-            <v-card class="mt-12" style="z-index: 999">
-                <br>
-                {{city}}
-            </v-card>
             <v-chip
                     class="mt-8 mr-4 float-right"
                     color="indigo"
@@ -80,7 +76,7 @@
                             if (data.city) {
                                 jeremy.city = data.city;
                             } else {
-                                jeremy.city = data;
+                                jeremy.city = data.info;
                                 // jeremy.city = "unknown";
                             }
                         }
