@@ -61,8 +61,8 @@
                     return
                 }
                 this.$store.commit("changeUserKey", this.inputKey);
-                this.$router.replace("/");
                 this.$store.commit("changeIsLogin", true);
+                this.$router.replace("/");
             },
             handleSignOut: function () {
                 this.$store.commit("changeUserKey", "undefined");
@@ -83,9 +83,7 @@
                 return this.$store.state.userKey;
             },
             isLogin: function () {
-                let loginStatus = typeof this.userKey == "string" && this.userKey !== "undefined";
-                this.$store.commit("changeIsLogin", loginStatus);
-                return loginStatus;
+                return this.$store.state.isLogin;
             }
         }
     }

@@ -107,10 +107,6 @@
                 return this.$store.state.isLogin;
             }
         },
-        mounted() {
-            this.$store.commit("changeIsLogin", localStorage.isLogin);
-            this.$store.commit("changeUserKey", localStorage.userKey);
-        }
     };
 </script>
 <style>
