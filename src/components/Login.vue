@@ -83,7 +83,8 @@
                 return this.$store.state.userKey;
             },
             isLogin: function () {
-                return this.$store.state.isLogin;
+                let isLogin = this.$store.state.isLogin;
+                return isLogin === 'true' || isLogin === true;
             }
         }
     }

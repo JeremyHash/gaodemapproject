@@ -47,7 +47,7 @@
         },
         methods: {},
         mounted() {
-            if (this.$store.state.isLogin === false) {
+            if (this.isLogin === false) {
                 this.$router.replace("/login");
             } else {
                 let jeremy = this;
@@ -97,7 +97,12 @@
                 });
             }
         },
-        computed: {}
+        computed: {
+            isLogin: function () {
+                let isLogin = this.$store.state.isLogin;
+                return isLogin === 'true' || isLogin === true;
+            }
+        }
     };
 </script>
 

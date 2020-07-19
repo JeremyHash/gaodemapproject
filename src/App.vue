@@ -104,9 +104,14 @@
         },
         computed: {
             isLogin: function () {
-                return this.$store.state.isLogin;
+                let isLogin = this.$store.state.isLogin;
+                return isLogin === 'true' || isLogin === true;
             }
         },
+        mounted() {
+            this.$store.commit("changeUserKey", localStorage.userKey);
+            this.$store.commit("changeIsLogin", localStorage.isLogin);
+        }
     };
 </script>
 <style>
