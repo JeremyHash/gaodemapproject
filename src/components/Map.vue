@@ -1,16 +1,18 @@
 <template>
-    <v-main id="container">
-        <v-chip
-                class="mt-8 mr-4 float-right"
-                color="indigo"
-                text-color="white"
-                id="cityChip"
-        >
-            <v-avatar left>
-                <v-icon>mdi-map-marker</v-icon>
-            </v-avatar>
-            {{city}}
-        </v-chip>
+    <v-main>
+        <div id="container">
+            <v-chip
+                    class="mt-8 mr-4 float-right"
+                    color="indigo"
+                    text-color="white"
+                    id="cityChip"
+            >
+                <v-avatar left>
+                    <v-icon>mdi-map-marker</v-icon>
+                </v-avatar>
+                {{city}}
+            </v-chip>
+        </div>
     </v-main>
 </template>
 
@@ -40,7 +42,9 @@
                     "key": "3c618ebb54475fb63eb35b900519cd6f",
                     "version": "2.0",
                 }).then((AMap) => {
-                    let map = new AMap.Map('container');
+                    let map = new AMap.Map('container', {
+                        resizeEnable: true
+                    });
                     // 同时引入工具条插件，比例尺插件和鹰眼插件
                     AMap.plugin([
                         'AMap.Geolocation',
@@ -48,19 +52,18 @@
                         'AMap.Scale',
                         'AMap.ControlBar'
                     ], function () {
-                        var geolocation = new AMap.Geolocation({
-                            // 是否使用高精度定位，默认：true
-                            enableHighAccuracy: true,
-                            // 设置定位超时时间，默认：无穷大
-                            timeout: 10000,
-                            // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
-                            buttonOffset: new AMap.Pixel(10, 20),
-                            //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                        let geolocation = new AMap.Geolocation({
+                            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                            timeout: 10000,          //超过10秒后停止定位，默认：5s
+                            position: 'RB',    //定位按钮的停靠位置
+                            offset: [40, 70],
+                            panToLocation: true,   //定位成功后是否自动调整地图视野到定位点
                             zoomToAccuracy: true,
-                            //  定位按钮的排放位置,  RB表示右下
-                            buttonPosition: 'RB'
+                            noIpLocate: 3,
+                            noGeoLocation: 0,
+                            getCityWhenFail: true
                         });
-
+                        map.addControl(geolocation);
                         geolocation.getCurrentPosition(function (status, result) {
                             if (status === 'complete') {
                                 onComplete(result)
@@ -71,11 +74,13 @@
 
                         function onComplete(data) {
                             // data是具体的定位信息
+                            console.log("locate success");
                             console.log(data)
                         }
 
                         function onError(data) {
                             // 定位出错
+                            console.log("locate fail");
                             console.log(data)
                         }
 
@@ -83,7 +88,7 @@
                         map.addControl(new AMap.ToolBar(
                             {
                                 position: {
-                                    top: '230px',
+                                    top: '260px',
                                     right: '40px'
                                 }
                             }
@@ -91,7 +96,7 @@
 
                         map.addControl(new AMap.ControlBar({
                             position: {
-                                top: '130px',
+                                top: '150px',
                                 right: '10px',
                             }
                         }),);
