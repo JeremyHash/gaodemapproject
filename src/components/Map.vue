@@ -73,8 +73,12 @@
 
                         function onComplete(data) {
                             // data是具体的定位信息
-                            console.log("locate success");
-                            jeremy.city = data.city;
+                            if (data.city) {
+                                jeremy.city = data.city;
+                            } else {
+                                jeremy.city = data;
+                                // jeremy.city = "unknown";
+                            }
                         }
 
                         function onError(data) {

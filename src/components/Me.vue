@@ -47,7 +47,7 @@
         },
         methods: {},
         mounted() {
-            if (this.$store.state.isLogin === 'false') {
+            if (this.$store.state.isLogin === false) {
                 this.$router.replace("/login");
             } else {
                 let jeremy = this;
