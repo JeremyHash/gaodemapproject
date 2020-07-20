@@ -31,7 +31,7 @@
                     @click="handleImgClick"
                     flat
             >
-                <v-img src="http://www.openluat.com/img/favicon.png"></v-img>
+                <v-img src="./assets/img/logo.png"></v-img>
             </v-card>
             <v-list-item-group mandatory>
                 <v-list shaped>
