@@ -77,48 +77,55 @@
                             };
                             jeremy.axios(requestLineConfig).then(function (res) {
                                 let points = res.data.data.tracks[0];
-                                /*for (let i = 0; i < 10; i++) {
+                                for (let i = 0; i < 50; i++) {
                                     points.points.shift();
                                     points.points.pop()
                                 }
-                                points.points.pop();
-                                points.points.pop();*/
                                 if (points) {
                                     let firstTime = (points.points[0].locatetime) / 1000;
                                     for (let i = 0; i < points.points.length; i++) {
                                         // {"x": 116.478928, "y": 39.997761, "sp": 19, "ag": 0, "tm": 1478031031},
                                         // {accuracy: 550, direction: 33, height: 12, locatetime: 1595227602000, location: "121.595393,31.071242"}
                                         let location = points.points[i].location;
+                                        let speed = points.points[i].speed;
+                                        let direction = points.points[i].direction;
+                                        let locatetime = points.points[i].locatetime / 1000;
+                                        let x = parseFloat(location.split(",")[0]);
+                                        let y = parseFloat(location.split(",")[1]);
+                                        AMap.convertFrom([x, y], 'gps', function (status, result) {
+                                            if (result.info === 'ok') {
+                                                var lnglats = result.locations;
+                                                y = lnglats[0].lng;
+                                                x = lnglats[0].lat;
+                                            }
+                                        });
                                         if (i === 0) {
+
                                             jeremy.purePath.push(
                                                 {
-                                                    "x": parseFloat(location.split(",")[0]),
-                                                    "y": parseFloat(location.split(",")[1]),
-                                                    "sp": points.points[i].speed,
-                                                    "ag": points.points[i].direction,
-                                                    "tm": (points.points[i].locatetime) / 1000
+                                                    "x": x,
+                                                    "y": y,
+                                                    "sp": speed,
+                                                    "ag": direction,
+                                                    "tm": locatetime
                                                 }
                                             )
                                         } else {
                                             jeremy.purePath.push(
                                                 {
-                                                    "x": parseFloat(location.split(",")[0]),
-                                                    "y": parseFloat(location.split(",")[1]),
-                                                    "sp": points.points[i].speed,
-                                                    "ag": points.points[i].direction,
-                                                    "tm": (points.points[i].locatetime / 1000) - firstTime
+                                                    "x": x,
+                                                    "y": y,
+                                                    "sp": speed,
+                                                    "ag": direction,
+                                                    "tm": locatetime - firstTime
                                                 }
                                             )
                                         }
                                     }
 
-                                    console.log(jeremy.purePath);
-                                    console.log(jeremy.testPath);
-
                                     let graspRoad = new AMap.GraspRoad();
 
                                     graspRoad.driving(jeremy.purePath, function (error, result) {
-                                        console.log(error);
                                         if (!error) {
                                             var path2 = [];
                                             var newPath = result.data.points;
@@ -130,7 +137,8 @@
                                                 strokeWeight: 8,
                                                 strokeOpacity: 0.8,
                                                 strokeColor: '#0091ea',
-                                                showDir: true
+                                                showDir: true,
+                                                lineJoin: "round"
                                             });
                                             map.add(newLine);
                                             console.log("添加路线");
