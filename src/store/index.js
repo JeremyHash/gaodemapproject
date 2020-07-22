@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         userKey: "undefined",
-        isLogin:false
+        isLogin: false,
+        requestLineAddr: '',
     },
     mutations: {
         changeUserKey: function (state, userKey) {
@@ -16,6 +17,9 @@ export default new Vuex.Store({
         changeIsLogin: function (state, isLogin) {
             state.isLogin = isLogin;
             localStorage.isLogin = isLogin
+        },
+        changeRequestLineAddr: function (state, requestLineAddr) {
+            state.requestLineAddr = requestLineAddr;
         },
     },
     actions: {},

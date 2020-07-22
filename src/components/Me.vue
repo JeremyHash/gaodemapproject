@@ -16,15 +16,25 @@
                     <v-list-item
                             v-for="terminal in service.terminals"
                             :key="terminal.tid"
-                            @click=""
+                            @click="handleTerminalClick(terminal.tid)"
                     >
+                        <v-list-item-icon>
+                            <v-icon v-text="tericon"></v-icon>
+                        </v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title v-text="terminal.name"></v-list-item-title>
+                            <v-list-item-title>
+                                {{'id: '+terminal.tid}}
+                                <br>
+                                {{'name: '+terminal.name}}
+                            </v-list-item-title>
+                            <v-list-item-subtitle>
+                                {{terminal.desc}}
+                            </v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list-group>
             </v-list>
-            <v-alert type="error" v-else v-model="userKey">
+            <v-alert type="error" v-else>
                 Your key {{userKey}} is Wrong!
                 <br>
                 Please input a right key.
@@ -42,10 +52,17 @@
             return {
                 userKey: localStorage.userKey,
                 isRightKey: false,
+                tericon: 'mdi-chip',
                 tree: [],
             }
         },
-        methods: {},
+        methods: {
+            handleTerminalClick: function (tid) {
+                let requestLineAddr = 'https://tsapi.amap.com/v1/track/terminal/trsearch?key=aebd43e54a7517f9dfce0467d6a84807&sid=165050&tid=' + tid + '&trid=20&pagesize=30';
+                this.$store.commit("changeRequestLineAddr", requestLineAddr);
+                this.$router.replace("/");
+            }
+        },
         mounted() {
             if (this.isLogin === false) {
                 this.$router.replace("/login");

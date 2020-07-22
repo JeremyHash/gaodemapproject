@@ -24,15 +24,9 @@
         data() {
             return {
                 city: "定位中",
-                originPath: [
-                    {"x": 116.478928, "y": 39.997761, "sp": 19, "ag": 0, "tm": 1478031031},
-                    {"x": 116.478907, "y": 39.998422, "sp": 10, "ag": 0, "tm": 2},
-                    {"x": 116.479384, "y": 39.998546, "sp": 10, "ag": 110, "tm": 3},
-                    {"x": 116.481053, "y": 39.998204, "sp": 10, "ag": 120, "tm": 4},
-                    {"x": 116.481793, "y": 39.997868, "sp": 10, "ag": 120, "tm": 5},
-                    {"x": 116.482898, "y": 39.998217, "sp": 10, "ag": 30, "tm": 6},
-                    {"x": 116.483789, "y": 39.999063, "sp": 10, "ag": 30, "tm": 7},
-                    {"x": 116.484674, "y": 39.999844, "sp": 10, "ag": 30, "tm": 8}]
+                purePath: [
+                    // {"x": 116.478928, "y": 39.997761, "sp": 19, "ag": 0, "tm": 1478031031},
+                ]
             }
         },
         methods: {
@@ -47,45 +41,10 @@
                     });
                     // 同时引入工具条插件，比例尺插件和鹰眼插件
                     AMap.plugin([
-                        'AMap.Geolocation',
                         'AMap.ToolBar',
                         'AMap.Scale',
+                        'AMap.GraspRoad'
                     ], function () {
-                        let geolocation = new AMap.Geolocation({
-                            enableHighAccuracy: true,//是否使用高精度定位，默认:true
-                            timeout: 10000,          //超过10秒后停止定位，默认：5s
-                            position: 'RT',    //定位按钮的停靠位置
-                            offset: [40, 150],
-                            panToLocation: true,   //定位成功后是否自动调整地图视野到定位点
-                            zoomToAccuracy: true,
-                            noIpLocate: 3,
-                            noGeoLocation: 0,
-                            getCityWhenFail: true
-                        });
-                        map.addControl(geolocation);
-                        geolocation.getCurrentPosition(function (status, result) {
-                            if (status === 'complete') {
-                                onComplete(result)
-                            } else {
-                                onError(result)
-                            }
-                        });
-
-                        function onComplete(data) {
-                            // data是具体的定位信息
-                            if (data.city) {
-                                jeremy.city = data.city;
-                            } else {
-                                jeremy.city = data.info;
-                                // jeremy.city = "unknown";
-                            }
-                        }
-
-                        function onError(data) {
-                            // 定位出错
-                            console.log(data);
-                        }
-
                         // 在图面添加工具条控件，工具条控件集成了缩放、平移、定位等功能按钮在内的组合控件
                         map.addControl(new AMap.ToolBar(
                             {
@@ -101,6 +60,78 @@
                             position: "RB"
                         }));
 
+                        let requestLineAddr = jeremy.$store.state.requestLineAddr;
+                        if (requestLineAddr !== '') {
+                            let requestLineConfig = {
+                                method: "get",
+                                url: requestLineAddr,
+                            };
+                            jeremy.axios(requestLineConfig).then(function (res) {
+                                let points = res.data.data.tracks[0];
+                                for (let i = 0; i < 10; i++) {
+                                    points.points.shift();
+                                    points.points.pop()
+                                }
+                                points.points.pop();
+                                points.points.pop();
+                                if (points) {
+                                    let firstTime = (points.points[0].locatetime) / 1000;
+                                    for (let i = 0; i < points.points.length; i++) {
+                                        // {"x": 116.478928, "y": 39.997761, "sp": 19, "ag": 0, "tm": 1478031031},
+                                        // {accuracy: 550, direction: 33, height: 12, locatetime: 1595227602000, location: "121.595393,31.071242"}
+                                        let location = points.points[i].location;
+                                        if (i === 0) {
+                                            jeremy.purePath.push(
+                                                {
+                                                    "x": location.split(",")[0],
+                                                    "y": location.split(",")[1],
+                                                    "sp": points.points[i].speed,
+                                                    "ag": points.points[i].direction,
+                                                    "tm": (points.points[i].locatetime) / 1000
+                                                }
+                                            )
+                                        } else {
+                                            jeremy.purePath.push(
+                                                {
+                                                    "x": location.split(",")[0],
+                                                    "y": location.split(",")[1],
+                                                    "sp": points.points[i].speed,
+                                                    "ag": points.points[i].direction,
+                                                    "tm": (points.points[i].locatetime / 1000) - firstTime
+                                                }
+                                            )
+                                        }
+                                    }
+
+                                    console.log(jeremy.purePath);
+
+                                    let graspRoad = new AMap.GraspRoad();
+
+                                    graspRoad.driving(jeremy.purePath, function (error, result) {
+                                        console.log(error);
+                                        if (!error) {
+                                            var path2 = [];
+                                            var newPath = result.data.points;
+                                            for (var i = 0; i < newPath.length; i += 1) {
+                                                path2.push([newPath[i].x, newPath[i].y])
+                                            }
+                                            var newLine = new AMap.Polyline({
+                                                path: path2,
+                                                strokeWeight: 8,
+                                                strokeOpacity: 0.8,
+                                                strokeColor: '#0091ea',
+                                                showDir: true
+                                            });
+                                            map.add(newLine);
+                                            console.log("添加路线");
+                                            map.setFitView()
+                                        }
+                                    })
+                                }
+                            })
+                        }
+
+
                     });
                 }).catch(e => {
                     console.log(e);
@@ -109,6 +140,7 @@
         },
         mounted() {
             this.loadMap();
+
         }
     }
 </script>
