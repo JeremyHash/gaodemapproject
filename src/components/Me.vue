@@ -58,7 +58,7 @@
         },
         methods: {
             handleTerminalClick: function (tid) {
-                let requestLineAddr = 'https://tsapi.amap.com/v1/track/terminal/trsearch?key=aebd43e54a7517f9dfce0467d6a84807&sid=165050&tid=' + tid + '&trid=20&pagesize=30';
+                let requestLineAddr = 'https://tsapi.amap.com/v1/track/terminal/trsearch?key=aebd43e54a7517f9dfce0467d6a84807&sid=165050&tid=' + tid + '&trid=20&pagesize=999';
                 this.$store.commit("changeRequestLineAddr", requestLineAddr);
                 this.$router.replace("/");
             }

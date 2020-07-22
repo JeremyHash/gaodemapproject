@@ -31,7 +31,7 @@
                     @click="handleImgClick"
                     flat
             >
-                <v-img src="./assets/img/logo.png"></v-img>
+                <v-img src="./assets/img/3333.jpg"></v-img>
             </v-card>
             <v-list-item-group mandatory>
                 <v-list shaped>
@@ -62,7 +62,7 @@
 
         data: () => {
             return {
-                AppTitle: "LuatMap",
+                AppTitle: "JeremyMap",
                 drawer: null,
                 jeremy2: true,
                 items: [

@@ -26,7 +26,16 @@
                 city: "定位中",
                 purePath: [
                     // {"x": 116.478928, "y": 39.997761, "sp": 19, "ag": 0, "tm": 1478031031},
-                ]
+                ],
+                testPath: [
+                    {"x": 116.478928, "y": 39.997761, "sp": 19, "ag": 0, "tm": 1478031031},
+                    {"x": 116.478907, "y": 39.998422, "sp": 10, "ag": 0, "tm": 2},
+                    {"x": 116.479384, "y": 39.998546, "sp": 10, "ag": 110, "tm": 3},
+                    {"x": 116.481053, "y": 39.998204, "sp": 10, "ag": 120, "tm": 4},
+                    {"x": 116.481793, "y": 39.997868, "sp": 10, "ag": 120, "tm": 5},
+                    {"x": 116.482898, "y": 39.998217, "sp": 10, "ag": 30, "tm": 6},
+                    {"x": 116.483789, "y": 39.999063, "sp": 10, "ag": 30, "tm": 7},
+                    {"x": 116.484674, "y": 39.999844, "sp": 10, "ag": 30, "tm": 8}]
             }
         },
         methods: {
@@ -68,12 +77,12 @@
                             };
                             jeremy.axios(requestLineConfig).then(function (res) {
                                 let points = res.data.data.tracks[0];
-                                for (let i = 0; i < 10; i++) {
+                                /*for (let i = 0; i < 10; i++) {
                                     points.points.shift();
                                     points.points.pop()
                                 }
                                 points.points.pop();
-                                points.points.pop();
+                                points.points.pop();*/
                                 if (points) {
                                     let firstTime = (points.points[0].locatetime) / 1000;
                                     for (let i = 0; i < points.points.length; i++) {
@@ -83,8 +92,8 @@
                                         if (i === 0) {
                                             jeremy.purePath.push(
                                                 {
-                                                    "x": location.split(",")[0],
-                                                    "y": location.split(",")[1],
+                                                    "x": parseFloat(location.split(",")[0]),
+                                                    "y": parseFloat(location.split(",")[1]),
                                                     "sp": points.points[i].speed,
                                                     "ag": points.points[i].direction,
                                                     "tm": (points.points[i].locatetime) / 1000
@@ -93,8 +102,8 @@
                                         } else {
                                             jeremy.purePath.push(
                                                 {
-                                                    "x": location.split(",")[0],
-                                                    "y": location.split(",")[1],
+                                                    "x": parseFloat(location.split(",")[0]),
+                                                    "y": parseFloat(location.split(",")[1]),
                                                     "sp": points.points[i].speed,
                                                     "ag": points.points[i].direction,
                                                     "tm": (points.points[i].locatetime / 1000) - firstTime
@@ -104,6 +113,7 @@
                                     }
 
                                     console.log(jeremy.purePath);
+                                    console.log(jeremy.testPath);
 
                                     let graspRoad = new AMap.GraspRoad();
 
