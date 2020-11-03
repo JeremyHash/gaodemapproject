@@ -101,7 +101,7 @@
                                             // showDir: true,
                                             // lineJoin: "round"
                                         });
-                                        map.add(newLine);
+                                        // map.add(newLine);
                                         map.add(jeremy.markerList);
                                         map.setFitView();
                                     }
