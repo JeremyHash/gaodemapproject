@@ -105,14 +105,14 @@ export default {
                     'AMap.GraspRoad'
                 ], function () {
                     // 在图面添加工具条控件，工具条控件集成了缩放、平移、定位等功能按钮在内的组合控件
-                    jeremy.map.addControl(new AMap.ToolBar(
+                    /*jeremy.map.addControl(new AMap.ToolBar(
                         {
                             position: {
                                 top: '80px',
                                 right: '40px'
                             }
                         }
-                    ));
+                    ));*/
 
                     // 在图面添加比例尺控件，展示地图在当前层级和纬度下的比例尺
                     jeremy.map.addControl(new AMap.Scale({
@@ -283,7 +283,7 @@ export default {
 }
 
 .locBtn {
-    z-index: 121;
+    z-index: 1;
 }
 
 </style>
