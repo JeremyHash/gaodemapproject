@@ -49,6 +49,18 @@
                 </v-icon>
                 {{ refreshStatus }}
             </v-btn>
+            <v-btn
+                class="mt-8 mr-4 float-right locBtn"
+                color="primary"
+                text-color="white"
+                rounded
+                @click="refresh"
+            >
+                <v-icon left>
+                    mdi-cached
+                </v-icon>
+                手动刷新
+            </v-btn>
         </div>
     </v-main>
 </template>
@@ -60,7 +72,7 @@ export default {
     name: "Map",
     data() {
         return {
-            refreshStatus: "刷新",
+            refreshStatus: "自动刷新",
             wifiColor: "primary",
             cellColor: "primary",
             gpsColor: "red",
@@ -104,61 +116,10 @@ export default {
                     'AMap.Scale',
                     'AMap.GraspRoad'
                 ], function () {
-                    // 在图面添加工具条控件，工具条控件集成了缩放、平移、定位等功能按钮在内的组合控件
-                    /*jeremy.map.addControl(new AMap.ToolBar(
-                        {
-                            position: {
-                                top: '80px',
-                                right: '40px'
-                            }
-                        }
-                    ));*/
-
                     // 在图面添加比例尺控件，展示地图在当前层级和纬度下的比例尺
                     jeremy.map.addControl(new AMap.Scale({
                         position: "RB"
                     }));
-
-                    /* let lat = jeremy.testPath[i].lat;
-                     let lng = jeremy.testPath[i].lng;
-                     let timestamp = jeremy.testPath[i].timestamp;
-                     AMap.convertFrom([lng, lat], 'gps', function (status, result) {
-                         if (result.info === 'ok') {
-                             var lnglats = result.locations;
-                             lng = lnglats[0].lng;
-                             lat = lnglats[0].lat;
-                             let jeremyPoint = {
-                                 "lng": lng,
-                                 "lat": lat,
-                                 "timestamp": timestamp
-                             };
-                             jeremy.convertPath.push(jeremyPoint);
-                             let point = new AMap.LngLat(lng, lat);
-                             let marker = new AMap.Marker({
-                                 position: point,
-                                 label: {
-                                     content: i + 1,
-                                     direction: 'right'
-                                 }
-                             });
-                             jeremy.markerList.push(marker);
-                             jeremy.pointsPath.push(point);
-                             if (i === jeremy.testPath.length - 1) {
-                                 let newLine = new AMap.Polyline({
-                                     path: jeremy.pointsPath,
-                                     strokeWeight: 6,
-                                     strokeOpacity: 0.8,
-                                     strokeColor: '#00D3FC',
-                                     // showDir: true,
-                                     // lineJoin: "round"
-                                 });
-                                 // map.add(newLine);
-                                 map.add(jeremy.markerList);
-                                 map.setFitView();
-                             }
-                         }
-                     });*/
-
                 });
             }).catch(e => {
                 console.log(e);
@@ -178,11 +139,11 @@ export default {
         },
         changeRefreshStatus: function () {
             let refreshStatus = this.refreshStatus
-            if (refreshStatus === "刷新") {
+            if (refreshStatus === "自动刷新") {
                 this.refreshStatus = "刷新中"
                 this.refreshInterval = setInterval(this.refresh, 5000)
             } else {
-                this.refreshStatus = "刷新"
+                this.refreshStatus = "自动刷新"
                 clearInterval(this.refreshInterval)
             }
         },
