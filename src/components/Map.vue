@@ -268,7 +268,28 @@ export default {
             });
         },
         gpsLocInfo: function () {
+            let jeremy = this
+            AMap.convertFrom([jeremy.gpsLocInfo.lng, jeremy.gpsLocInfo.lat], 'gps', function (status, result) {
+                if (result.info === 'ok') {
+                    var lngAndlat = result.locations;
+                    let gdLng = lngAndlat[0].lng;
+                    let gdLat = lngAndlat[0].lat;
+                    let point = new AMap.LngLat(gdLng, gdLat);
+                    let unixTimestamp = new Date(jeremy.gpsLocInfo.timestamp * 1000);
+                    let commonTime = unixTimestamp.toLocaleString()
+                    jeremy.gpsMarker = new AMap.Marker({
+                        position: point,
+                        label: {
+                            content: `GPS\r\nLng:${gdLng}, Lat:${gdLat}, time:${commonTime}`,
+                            direction: 'top'
+                        }
+                    });
 
+                    jeremy.map.add(jeremy.gpsMarker);
+                    jeremy.map.setFitView();
+
+                }
+            });
         },
     },
     mounted() {
