@@ -42,13 +42,12 @@
                 color="primary"
                 text-color="white"
                 rounded
-                @click="refresh"
-                :disabled="refreshDisable"
+                @click="changeRefreshStatus"
             >
                 <v-icon left>
                     mdi-cached
                 </v-icon>
-                刷新
+                {{ refreshStatus }}
             </v-btn>
         </div>
     </v-main>
@@ -61,19 +60,20 @@ export default {
     name: "Map",
     data() {
         return {
-            refreshDisable: false,
-            wifiColor: "gray",
-            cellColor: "gray",
-            gpsColor: "gray",
+            refreshStatus: "刷新",
+            wifiColor: "primary",
+            cellColor: "primary",
+            gpsColor: "red",
+            refreshInterval: 0,
             cellLocInfo: {},
             wifiLocInfo: {},
             gpsLocInfo: {},
             cellMarker: {},
             wifiMarker: {},
             gpsMarker: {},
-            cellLocStatus: false,
-            wifiLocStatus: false,
-            gpsLocStatus: false,
+            cellLocStatus: true,
+            wifiLocStatus: true,
+            gpsLocStatus: true,
             getCellAxiosConfig: {
                 url: "http://wiki.airm2m.com:48080/getCellLocInfo",
                 method: "get"
@@ -165,31 +165,38 @@ export default {
             });
         },
         CellLocHandler: function () {
-            this.cellColor === "primary" ? this.cellColor = "gray" : this.cellColor = "primary"
+            this.cellColor === "gray" ? this.cellColor = "primary" : this.cellColor = "gray"
             this.cellLocStatus === true ? this.cellLocStatus = false : this.cellLocStatus = true
         },
         WiFiLocHandler: function () {
-            this.wifiColor === "primary" ? this.wifiColor = "gray" : this.wifiColor = "primary"
+            this.wifiColor === "gray" ? this.wifiColor = "primary" : this.wifiColor = "gray"
             this.wifiLocStatus === true ? this.wifiLocStatus = false : this.wifiLocStatus = true
         },
         GPSLocHandler: function () {
-            this.gpsColor === "primary" ? this.gpsColor = "gray" : this.gpsColor = "primary"
+            this.gpsColor === "gray" ? this.gpsColor = "red" : this.gpsColor = "gray"
             this.gpsLocStatus === true ? this.gpsLocStatus = false : this.gpsLocStatus = true
+        },
+        changeRefreshStatus: function () {
+            let refreshStatus = this.refreshStatus
+            if (refreshStatus === "刷新") {
+                this.refreshStatus = "刷新中"
+                this.refreshInterval = setInterval(this.refresh, 5000)
+            } else {
+                this.refreshStatus = "刷新"
+                clearInterval(this.refreshInterval)
+            }
         },
         refresh: function () {
             let jeremy = this
             jeremy.map.remove(jeremy.cellMarker)
             jeremy.map.remove(jeremy.wifiMarker)
             jeremy.map.remove(jeremy.gpsMarker)
-            jeremy.refreshDisable = true
             if (jeremy.cellLocStatus) {
                 this.axios(this.getCellAxiosConfig).then(function (res) {
                     if (res) {
                         jeremy.cellLocInfo = res.data
-                        jeremy.refreshDisable = false
                     }
                 }).catch(function (error) {
-                    jeremy.refreshDisable = false
                     console.log(error);
                 });
             }
@@ -197,10 +204,8 @@ export default {
                 this.axios(this.getWiFiAxiosConfig).then(function (res) {
                     if (res) {
                         jeremy.wifiLocInfo = res.data
-                        jeremy.refreshDisable = false
                     }
                 }).catch(function (error) {
-                    jeremy.refreshDisable = false
                     console.log(error);
                 });
             }
@@ -208,17 +213,17 @@ export default {
                 this.axios(this.getGPSAxiosConfig).then(function (res) {
                     if (res) {
                         jeremy.gpsLocInfo = res.data
-                        jeremy.refreshDisable = false
                     }
                 }).catch(function (error) {
-                    jeremy.refreshDisable = false
                     console.log(error);
                 });
             }
-            jeremy.refreshDisable = false
         }
     },
     watch: {
+        refreshStatus: function () {
+
+        },
         cellLocInfo: function () {
             let jeremy = this
             AMap.convertFrom([jeremy.cellLocInfo.lng, jeremy.cellLocInfo.lat], 'gps', function (status, result) {
@@ -236,7 +241,6 @@ export default {
                             direction: 'top'
                         }
                     });
-
                     jeremy.map.add(jeremy.cellMarker);
                     jeremy.map.setFitView();
 
@@ -280,10 +284,16 @@ export default {
                     jeremy.gpsMarker = new AMap.Marker({
                         position: point,
                         label: {
-                            content: `GPS\r\nLng:${gdLng}, Lat:${gdLat}, time:${commonTime}`,
+                            content: `GPS\r\nLng:${gdLng}, Lat:${gdLat}, ${commonTime}`,
                             direction: 'top'
-                        }
+                        },
+                        icon: new AMap.Icon({
+                            size: new AMap.Size(19, 26),
+                            image: "//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png",
+                            imageSize: new AMap.Size(19, 26)
+                        })
                     });
+
 
                     jeremy.map.add(jeremy.gpsMarker);
                     jeremy.map.setFitView();
