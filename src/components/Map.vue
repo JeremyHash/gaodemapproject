@@ -87,15 +87,15 @@ export default {
             wifiLocStatus: true,
             gpsLocStatus: true,
             getCellAxiosConfig: {
-                url: "http://wiki.airm2m.com:48080/getCellLocInfo",
+                url: "http://airtest.openluat.com:2900/getCellLocInfo",
                 method: "get"
             },
             getWiFiAxiosConfig: {
-                url: "http://wiki.airm2m.com:48080/getWiFiLocInfo",
+                url: "http://airtest.openluat.com:2900/getWiFiLocInfo",
                 method: "get"
             },
             getGPSAxiosConfig: {
-                url: "http://wiki.airm2m.com:48080/getGPSLocInfo",
+                url: "http://airtest.openluat.com:2900/getGPSLocInfo",
                 method: "get"
             }
         }
